@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS county (
+--   id INTEGER PRIMARY KEY ASC,
+  date TEXT,
+  county TEXT NOT NULL,
+  state TEXT NOT NULL,
+  fips TEXT NOT NULL,
+  cases INTEGER,
+  deaths INTEGER,
+  UNIQUE(date, county, state)
+);
+
+selectAll:
+SELECT *
+FROM county;
+
+insert:
+INSERT INTO county(date, county, state, fips, cases, deaths)
+VALUES (date(?), ?, ?, ?, ?, ?)
+ON CONFLICT(date, county, state) DO UPDATE SET cases = excluded.cases, deaths = excluded.deaths;
+
+withFilters:
+SELECT * FROM county
+WHERE (state = :state OR :state IS NULL)
+AND (county = :county OR :county IS NULL)
+AND (fips = :fips OR :fips IS NULL);
+
