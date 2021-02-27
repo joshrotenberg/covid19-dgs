@@ -3,6 +3,7 @@ package com.joshrotenberg.covid19.batch
 import com.joshrotenberg.covid19.Database
 import com.joshrotenberg.covid19.batch.fieldsetmapper.CountyFieldSetMapper
 import com.joshrotenberg.covid19.data.County
+import org.slf4j.LoggerFactory
 import org.springframework.batch.core.Job
 import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.core.Step
@@ -29,15 +30,16 @@ class JobConfiguration(
     val jobLauncher: JobLauncher,
     val db: Database
 ) {
+    private val logger = LoggerFactory.getLogger(JobConfiguration::class.java)
 
     @Value("\${covid19.county.url}")
-    lateinit var  countyUrl: String
+    lateinit var countyUrl: String
 
     @Bean
     fun countyItemReader(): FlatFileItemReader<County> {
         val reader = FlatFileItemReader<County>()
         reader.setLinesToSkip(1)
-        reader.setMaxItemCount(1000)
+//        reader.setMaxItemCount(10000)
         reader.setResource(UrlResource(countyUrl))
 
         val countyLineMapper = DefaultLineMapper<County>()
@@ -64,8 +66,8 @@ class JobConfiguration(
     }
 
     @Bean
-    fun step1(): Step {
-        return stepBuilderFactory.get("step1")
+    fun countiesStep(): Step {
+        return stepBuilderFactory.get("countiesStep")
             .chunk<County, County>(1000)
             .reader(countyItemReader())
             .writer(countyItemWriter())
@@ -76,11 +78,11 @@ class JobConfiguration(
     @Bean
     fun job(): Job {
         return jobBuilderFactory.get("job")
-            .start(step1())
+            .start(countiesStep())
             .build()
     }
 
-    @Scheduled(fixedRate = 50000L)
+    @Scheduled(fixedRate = 60000L)
     fun runJob() {
         val params = JobParametersBuilder().addDate("jobTime", Date()).toJobParameters()
         val execution = jobLauncher.run(job(), params)
