@@ -22,5 +22,12 @@ withFilters:
 SELECT * FROM county
 WHERE (state = :state OR :state IS NULL)
 AND (county = :county OR :county IS NULL)
-AND (fips = :fips OR :fips IS NULL);
+AND (fips = :fips OR :fips IS NULL)
+AND (date = date(:on) OR :on IS NULL)
+AND (date < date(:before) OR :before IS NULL)
+AND (date > date(:after) OR :after IS NULL)
+AND (cases >= :casesGTE OR :casesGTE IS NULL)
+AND (cases <= :casesLTE OR :casesLTE IS NULL)
+AND (deaths >= :deathsGTE OR :deathsGTE IS NULL)
+AND (deaths <= :deathsLTE OR :deathsLTE IS NULL);
 

@@ -3,6 +3,8 @@ package com.joshrotenberg.covid19.services
 import com.example.demo.generated.types.County
 import com.joshrotenberg.covid19.Database
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 class CountyService(val database: Database) {
@@ -11,23 +13,47 @@ class CountyService(val database: Database) {
         return "some county"
     }
 
-    fun filterCounties(countyFilter: String?, stateFilter: String?, fipsFilter: String?): List<County> {
-        return database.countyQueries().withFilters(county = countyFilter, state = stateFilter, fips = null).executeAsList().map {
-            County(
-                date = it.date,
-                county = it.county,
-                state = it.state,
-                fips = it.fips,
-                cases = it.cases?.toInt(),
-                deaths = it.deaths?.toInt()
-            )
-        }
+    fun filterCounties(
+        county: String?,
+        state: String?,
+        fips: String?,
+        on: String?,
+        before: String?,
+        after: String?,
+        casesGTE: Long?,
+        casesLTE: Long?,
+        deathsGTE: Long?,
+        deathsLTE: Long?,
+
+    ): List<County> {
+        return database.countyQueries().withFilters(
+            county = county,
+            state = state,
+            fips = fips,
+            on = on,
+            before = before,
+            after = after,
+            casesGTE = casesGTE,
+            casesLTE = casesLTE,
+            deathsGTE = deathsGTE,
+            deathsLTE = deathsLTE,
+        )
+            .executeAsList().map {
+                County(
+                    date = LocalDate.parse(it.date, DateTimeFormatter.ISO_DATE),
+                    county = it.county,
+                    state = it.state,
+                    fips = it.fips,
+                    cases = it.cases?.toInt(),
+                    deaths = it.deaths?.toInt()
+                )
+            }
     }
 
     fun counties(): List<County> {
         return database.countyQueries().selectAll().executeAsList().map {
             County(
-                date = it.date,
+                date = LocalDate.parse(it.date, DateTimeFormatter.ISO_DATE),
                 county = it.county,
                 state = it.state,
                 fips = it.fips,

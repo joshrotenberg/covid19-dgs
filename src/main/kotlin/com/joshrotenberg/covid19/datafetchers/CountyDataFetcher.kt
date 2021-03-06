@@ -12,9 +12,17 @@ class CountyDataFetcher(private val countyServiceImpl: CountyService) {
 
     @DgsData(parentType = DgsConstants.QUERY_TYPE, field = DgsConstants.QUERY.Counties)
     fun counties(
-        @InputArgument("countyFilter") countyFilter: String?, @InputArgument("stateFilter") stateFilter: String?,
-        @InputArgument("fipsFilter") fipsFilter: String?
+        @InputArgument("county") county: String?,
+        @InputArgument("state") state: String?,
+        @InputArgument("fips") fips: String?,
+        @InputArgument("on") on: String?,
+        @InputArgument("before") before: String?,
+        @InputArgument("after") after: String?,
+        @InputArgument("casesGTE") casesGTE: Long?,
+        @InputArgument("casesLTE") casesLTE: Long?,
+        @InputArgument("deathsGTE") deathsGTE: Long?,
+        @InputArgument("deathsLTE") deathsLTE: Long?,
     ): List<County> {
-        return countyServiceImpl.filterCounties(countyFilter, stateFilter, fipsFilter)
+        return countyServiceImpl.filterCounties(county, state, fips, on, before, after, casesGTE, casesLTE, deathsGTE, deathsLTE)
     }
 }
