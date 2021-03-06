@@ -82,10 +82,9 @@ class JobConfiguration(
             .build()
     }
 
-    @Scheduled(fixedRate = 60000L)
+    @Scheduled(fixedRate = 600000L)
     fun runJob() {
         val params = JobParametersBuilder().addDate("jobTime", Date()).toJobParameters()
         val execution = jobLauncher.run(job(), params)
-        println(db.countyQueries().selectAll().executeAsList().count())
     }
 }
