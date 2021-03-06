@@ -1,12 +1,15 @@
 type Query {
-    counties(countyFilter: String, stateFilter: String, fipsFilter: String): [County]
+    counties(county: String, state: String, fips: String, on: String, before: String, after: String, casesGTE: Int, casesLTE: Int, deathsGTE: Int, deathsLTE: Int): [County]
 }
 
 type County {
-    date: String
+    #    date: String
+    date: Date
     county: String
     state: String
     fips: String
     cases: Int
     deaths: Int
 }
+
+scalar Date
