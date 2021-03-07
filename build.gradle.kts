@@ -3,14 +3,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.useIR = true
 
+val dgsSpringBootStarterVersion: String by project
+val graphqlJavaExtendedScalarsVersion: String by project
+val sqldelightSQLiteDriverVersion: String by project
+val sqliteJdbcVersion: String by project
+
 plugins {
-    id("org.springframework.boot") version "2.4.3"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.4.30"
-    kotlin("plugin.spring") version "1.4.30"
-    id("com.squareup.sqldelight") version "1.4.4"
-    id("com.netflix.dgs.codegen") version "4.0.12"
-    id("com.google.cloud.tools.jib") version "2.8.0"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    kotlin("jvm")
+    kotlin("plugin.spring")
+    id("com.squareup.sqldelight")
+    id("com.netflix.dgs.codegen")
 }
 
 group = "com.joshrotenberg"
@@ -23,15 +27,16 @@ repositories {
 }
 
 dependencies {
-    api("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:3.1.1")
+    api("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter:$dgsSpringBootStarterVersion")
 
-    implementation("com.graphql-java:graphql-java-extended-scalars:1.0")
+    implementation("com.graphql-java:graphql-java-extended-scalars:$graphqlJavaExtendedScalarsVersion")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.batch:spring-batch-core")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.squareup.sqldelight:sqlite-driver:1.4.4")
-    implementation("org.xerial:sqlite-jdbc:3.34.0")
+
+    implementation("com.squareup.sqldelight:sqlite-driver:$sqldelightSQLiteDriverVersion")
+    implementation("org.xerial:sqlite-jdbc:$sqliteJdbcVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
